@@ -1,0 +1,15 @@
+{
+	"typescript.tsdk": "node_modules\\typescript\\lib",
+	"editor.formatOnSave": true,
+	"editor.tabSize": 2,
+	"editor.codeActionsOnSave": {
+		"source.fixAll": true,
+		"source.organizeImports": true
+	},
+	"eslint.lintTask.enable": true,
+	"files.trimTrailingWhitespace": true,
+	"files.insertFinalNewline": true,
+	"files.trimFinalNewlines": true,
+	"prettier.requireConfig": true,
+	"debug.javascript.autoAttachFilter": "onlyWithFlag"
+}
