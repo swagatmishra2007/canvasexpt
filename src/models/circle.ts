@@ -5,18 +5,23 @@ export interface Circle {
 	y: number
 }
 
-export const drawCircle = (canvas: HTMLCanvasElement, pt: Point, radius: number) => {
+export const drawCircle = (canvas: HTMLCanvasElement, pt: Point, radius: number, text?: string) => {
 	const context = canvas.getContext('2d');
 	const canvasWidth = canvas.width;
 	const canvasHeight = canvas.height;
 
 	context.beginPath();
 	context.arc(pt.x, pt.y, radius, 0, 2 * Math.PI, false);
-	context.fillStyle = 'green';
-	context.lineWidth = 5;
-	context.fill;
-	context.strokeStyle = '#003300';
+	// context.fillStyle = 'green';
+	// context.lineWidth = 5;
+	// context.fill;
+	// context.strokeStyle = '#003300';
 	context.stroke();
+	context.closePath()
+	if (text) {
+		context.strokeText(text, pt.x, pt.y);
+
+	}
 };
 
 export const calculateMouseRelativePositionInCanvas = (e: MouseEvent, canvas: HTMLCanvasElement) => {

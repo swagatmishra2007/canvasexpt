@@ -1,6 +1,6 @@
-import { drawCircle } from "./models/circle";
-import { Point } from "./models/point";
+import { bTree, Node } from "./animations/trees";
 
+let node: Node;
 function main() {
   // if (navigator.serviceWorker.controller) {
   //   console.log('Active service worker found, no need to register');
@@ -19,13 +19,24 @@ function main() {
   canvas.height = document.body.clientHeight;
   // const flowers = new InteractiveFlowers(canvas);
   // const rectangles = new Rectangles(canvas);
-  //configureForDrawCircle(canvas);
-  drawCircle(canvas, new Point(200, 200), 50);
+  // configureForDrawCircle(canvas);
+  // drawCircle(canvas, new Point(200, 200), 50);
+  // node = bTree(null, 5, canvas);
 
-  const btn = document.getElementById('clearBtn');
+  // const btn = document.getElementById('clearBtn');
+  // btn.addEventListener('click', () => {
+  //   //flowers.clearCanvas();
+  //   // rectangles.clearCanvas();
+  // });
+  const btn = document.getElementById('add-to-tree');
   btn.addEventListener('click', () => {
-    //flowers.clearCanvas();
-    // rectangles.clearCanvas();
+    const input = <HTMLInputElement>document.getElementById('tree-input');
+    const canvas = <HTMLCanvasElement>document.getElementById('flowers');
+    const value = parseInt(input.value);
+    if (value)
+      node = bTree(node, value, canvas);
+    else
+      alert("Wrong input");
   });
 }
 
