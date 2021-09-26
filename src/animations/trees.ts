@@ -41,42 +41,55 @@ export const bTree = (root: Node, value: number, canvas: HTMLCanvasElement): Nod
 	}
 	else {
 		// node needs to be added to root
-		recursiveAddNode(root, node, canvas);
+		recursiveAddNode(root, node);
 		return root;
 	}
-
 }
 
-const recursiveAddNode = (currentNode: Node, nodeToAdd: Node, canvas: HTMLCanvasElement) => {
+export const displayBTree = (root: Node, canvas: HTMLCanvasElement) => {
+	displayBTreeSubTree(null, root, canvas);
+}
+
+const displayBTreeSubTree = (previousNode: Node, currentNode: Node, canvas: HTMLCanvasElement) => {
+	if (currentNode) {
+		display(previousNode, currentNode, canvas);
+		displayBTreeSubTree(currentNode, currentNode.leftNode, canvas);
+		displayBTreeSubTree(currentNode, currentNode.rightNode, canvas);
+	}
+}
+
+const display = (previousNode: Node, node: Node, canvas: HTMLCanvasElement) => {
+	if (node) {
+		drawNode(node, canvas);
+		if (previousNode) {
+			drawLine(previousNode, node, canvas);
+		}
+	}
+}
+
+const recursiveAddNode = (currentNode: Node, nodeToAdd: Node) => {
 	if (nodeToAdd.value < currentNode.value) {
 		if (currentNode.leftNode) {
-			recursiveAddNode(currentNode.leftNode, nodeToAdd, canvas);
+			recursiveAddNode(currentNode.leftNode, nodeToAdd);
 			return;
 		}
 		else {
 			const location = getLeftNodePoint(currentNode.point, nodeToAdd.radius);
 			nodeToAdd.point = location;
 			currentNode.leftNode = nodeToAdd;
-			drawNode(nodeToAdd, canvas);
-			drawLine(currentNode, nodeToAdd, canvas);
-			return;
 		}
 	}
 	else {
 		if (currentNode.rightNode) {
-			recursiveAddNode(currentNode.rightNode, nodeToAdd, canvas);
+			recursiveAddNode(currentNode.rightNode, nodeToAdd);
 			return;
 		}
 		else {
 			const location = getRightNodePoint(currentNode.point, nodeToAdd.radius);
 			nodeToAdd.point = location;
 			currentNode.rightNode = nodeToAdd;
-			drawNode(nodeToAdd, canvas);
-			drawLine(currentNode, nodeToAdd, canvas);
-			return;
 		}
 	}
-
 }
 
 const getLeftNodePoint = (point: Point, radius: number) => {

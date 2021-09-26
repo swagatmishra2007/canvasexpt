@@ -1,4 +1,4 @@
-import { bTree, Node } from "./animations/trees";
+import { bTree, displayBTree, Node } from "./animations/trees";
 
 let node: Node;
 function main() {
@@ -33,8 +33,14 @@ function main() {
     const input = <HTMLInputElement>document.getElementById('tree-input');
     const canvas = <HTMLCanvasElement>document.getElementById('flowers');
     const value = parseInt(input.value);
-    if (value)
+    if (value) {
+      const context = canvas.getContext('2d');
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      // node = bTree(node, value, canvas);
       node = bTree(node, value, canvas);
+      displayBTree(node, canvas);
+    }
+
     else
       alert("Wrong input");
   });
