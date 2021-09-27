@@ -1,4 +1,4 @@
-import { bTree, displayBTree, leftRotate, Node } from "./animations/trees";
+import { bTree, displayBTree, leftRotate, Node } from './animations/trees';
 
 let node: Node;
 function main() {
@@ -33,10 +33,9 @@ function main() {
         node = bTree(node, x, canvas);
       }
       displayBTree(node, canvas);
+    } else {
+      alert('Wrong input');
     }
-
-    else
-      alert("Wrong input");
   });
 
   document.getElementById('left-rotate').addEventListener('click', () => {

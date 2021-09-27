@@ -1,7 +1,7 @@
 import { Point } from '../models/point';
 
 export class Rectangle {
-    public readonly bottomLeft : Point;
+    public readonly bottomLeft: Point;
     public readonly topRight: Point;
     constructor(bottomLeft: Point, rightTop: Point) {
         // determine which is actually bottom left
@@ -38,41 +38,39 @@ export class Rectangles {
       this.rectangles.forEach(rect => {
         this.context.beginPath();
         this.context.fillStyle = 'green';
-        this.context.fillRect(rect.bottomLeft.x,rect.bottomLeft.y, (rect.topRight.x - rect.bottomLeft.x), (rect.topRight.y - rect.bottomLeft.y));
+        this.context.fillRect(rect.bottomLeft.x, rect.bottomLeft.y, (rect.topRight.x - rect.bottomLeft.x), (rect.topRight.y - rect.bottomLeft.y));
         this.context.stroke();
       });
-      for(let i = 0; i <this.rectangles.length; i++) {
-          for (let j = i + 1; j<this.rectangles.length; j++){
-            //determine if they intersect
-            let rect1 = this.rectangles[i];
-            let rect2 = this.rectangles[j];
-            if(rect1.bottomLeft.x > rect2.topRight.x || rect1.bottomLeft.y > rect2.topRight.y || rect1.topRight.x  < rect2.bottomLeft.x || rect1.topRight.y < rect2.bottomLeft.y) {
-              //no intersection
-            }
-            else {
-              let bottomLeft = new Point(Math.max(rect1.bottomLeft.x, rect2.bottomLeft.x), Math.max(rect1.bottomLeft.y, rect2.bottomLeft.y));
-              let topRight = new Point(Math.min(rect1.topRight.x, rect2.topRight.x), Math.min(rect1.topRight.y, rect2.topRight.y));
-              let rect = new Rectangle(bottomLeft, topRight);
+      for (let i = 0; i < this.rectangles.length; i++) {
+          for (let j = i + 1; j < this.rectangles.length; j++) {
+            // determine if they intersect
+            const rect1 = this.rectangles[i];
+            const rect2 = this.rectangles[j];
+            if (rect1.bottomLeft.x > rect2.topRight.x || rect1.bottomLeft.y > rect2.topRight.y || rect1.topRight.x  < rect2.bottomLeft.x || rect1.topRight.y < rect2.bottomLeft.y) {
+              // no intersection
+            } else {
+              const bottomLeft = new Point(Math.max(rect1.bottomLeft.x, rect2.bottomLeft.x), Math.max(rect1.bottomLeft.y, rect2.bottomLeft.y));
+              const topRight = new Point(Math.min(rect1.topRight.x, rect2.topRight.x), Math.min(rect1.topRight.y, rect2.topRight.y));
+              const rect = new Rectangle(bottomLeft, topRight);
               this.context.beginPath();
               this.context.fillStyle = 'teal';
-              this.context.fillRect(rect.bottomLeft.x,rect.bottomLeft.y, (rect.topRight.x - rect.bottomLeft.x), (rect.topRight.y - rect.bottomLeft.y));
+              this.context.fillRect(rect.bottomLeft.x, rect.bottomLeft.y, (rect.topRight.x - rect.bottomLeft.x), (rect.topRight.y - rect.bottomLeft.y));
               this.context.stroke();
-            } 
+            }
           }
       }
   }
 
   private addInteractions() {
       this.canvas.addEventListener('click', e => {
-          if(this.ctrlIsPressed) {
+          if (this.ctrlIsPressed) {
               this.clearCanvas();
               return;
           }
           this.calculateMouseRelativePositionInCanvas(e);
-          if(!this.inCompleteRectangle) {
+          if (!this.inCompleteRectangle) {
               this.inCompleteRectangle = this.mousePosition;
-          }
-          else {
+          } else {
               this.rectangles.push(new Rectangle(this.inCompleteRectangle, this.mousePosition));
               this.inCompleteRectangle = undefined;
           }

@@ -11,7 +11,8 @@
     "start": "webpack serve --open",
     "build": "webpack",
     "ghpage": "npm run build:page && cp ./docs/index.html ./docs/404.html",
-    "build:page": "webpack --output-path docs"
+    "build:page": "webpack --output-path docs",
+    "lint": "npx tslint --project . --fix"
   },
   "dependencies": {},
   "devDependencies": {

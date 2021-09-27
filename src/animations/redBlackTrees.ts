@@ -1,11 +1,11 @@
-import { drawCircle } from "../models/circle";
-import { Point } from "../models/point";
-import { Node, Radius } from "./trees";
+import { drawCircle } from '../models/circle';
+import { Point } from '../models/point';
+import { Node, Radius } from './trees';
 
 export type Color = 'Red' | 'Black';
 
 export interface RedBlackNode extends Node {
-	color: Color
+	color: Color;
 }
 
 export const redBlackTree = (root: RedBlackNode, value: number, canvas: HTMLCanvasElement) => {
@@ -15,7 +15,7 @@ export const redBlackTree = (root: RedBlackNode, value: number, canvas: HTMLCanv
 		rightNode: undefined,
 		point: new Point(500, 100),
 		radius: Radius,
-		color: "Red",
+		color: 'Red',
 		parent: null
 	};
 
@@ -27,7 +27,7 @@ export const redBlackTree = (root: RedBlackNode, value: number, canvas: HTMLCanv
 	return node;
 
 
-}
+};
 
 const drawRedBlackNode = (node: RedBlackNode, canvas: HTMLCanvasElement) => {
 	drawCircle(canvas, node.point, node.radius, node.value.toString(), (context) => { context.strokeStyle = node.color.toString(); });

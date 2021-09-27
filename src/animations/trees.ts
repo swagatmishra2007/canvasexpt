@@ -1,15 +1,15 @@
-import { drawCircle } from "../models/circle";
-import { Point } from "../models/point";
+import { drawCircle } from '../models/circle';
+import { Point } from '../models/point';
 
 export const Radius = 10;
 
 export interface Node {
-	value: number,
-	leftNode: Node,
-	rightNode: Node,
-	point: Point,
-	radius: number,
-	parent: Node
+	value: number;
+	leftNode: Node;
+	rightNode: Node;
+	point: Point;
+	radius: number;
+	parent: Node;
 }
 
 const drawLine = (source: Node, destination: Node, canvas: HTMLCanvasElement) => {
@@ -40,17 +40,16 @@ export const bTree = (root: Node, value: number, canvas: HTMLCanvasElement): Nod
 	if (!root) {
 		drawNode(node, canvas);
 		return node;
-	}
-	else {
+	} else {
 		// node needs to be added to root
 		recursiveAddNode(root, node);
 		return root;
 	}
-}
+};
 
 export const displayBTree = (root: Node, canvas: HTMLCanvasElement) => {
 	displayBTreeSubTree(null, root, canvas);
-}
+};
 
 const displayBTreeSubTree = (previousNode: Node, currentNode: Node, canvas: HTMLCanvasElement) => {
 	if (currentNode) {
@@ -58,7 +57,7 @@ const displayBTreeSubTree = (previousNode: Node, currentNode: Node, canvas: HTML
 		displayBTreeSubTree(currentNode, currentNode.leftNode, canvas);
 		displayBTreeSubTree(currentNode, currentNode.rightNode, canvas);
 	}
-}
+};
 
 const display = (previousNode: Node, node: Node, canvas: HTMLCanvasElement) => {
 	if (node) {
@@ -67,41 +66,38 @@ const display = (previousNode: Node, node: Node, canvas: HTMLCanvasElement) => {
 			drawLine(previousNode, node, canvas);
 		}
 	}
-}
+};
 
 const recursiveAddNode = (currentNode: Node, nodeToAdd: Node) => {
 	if (nodeToAdd.value < currentNode.value) {
 		if (currentNode.leftNode) {
 			recursiveAddNode(currentNode.leftNode, nodeToAdd);
 			return;
-		}
-		else {
+		} else {
 			const location = getLeftNodePoint(currentNode.point, nodeToAdd.radius);
 			nodeToAdd.point = location;
 			currentNode.leftNode = nodeToAdd;
 			nodeToAdd.parent = currentNode;
 		}
-	}
-	else {
+	} else {
 		if (currentNode.rightNode) {
 			recursiveAddNode(currentNode.rightNode, nodeToAdd);
 			return;
-		}
-		else {
+		} else {
 			const location = getRightNodePoint(currentNode.point, nodeToAdd.radius);
 			nodeToAdd.point = location;
 			currentNode.rightNode = nodeToAdd;
 			nodeToAdd.parent = currentNode;
 		}
 	}
-}
+};
 
 export const getLeftNodePoint = (point: Point, radius: number) => {
 	return new Point(point.x - (3 * radius), point.y + (3 * radius));
-}
+};
 export const getRightNodePoint = (point: Point, radius: number) => {
 	return new Point(point.x + (3 * radius), point.y + (3 * radius));
-}
+};
 
 export const leftRotate = (node: Node, root: Node) => {
 	if (!node.rightNode) {
@@ -117,13 +113,11 @@ export const leftRotate = (node: Node, root: Node) => {
 	if (x.parent) {
 		if (x.parent.leftNode === x) {
 			x.parent.leftNode = y;
-		}
-		else {
+		} else {
 			x.parent.rightNode = y;
 		}
 		changeParent(y, x.parent);
-	}
-	else {
+	} else {
 		// x is root, so override root
 		changeParent(y, null);
 		root = y;
@@ -131,14 +125,13 @@ export const leftRotate = (node: Node, root: Node) => {
 
 	changeParent(x, y);
 	return root;
-}
+};
 
 const changeParent = (node: Node, newParent: Node) => {
 	if (!newParent) {
 		// node is new root
 		node.point = new Point(500, 100);
-	}
-	else {
+	} else {
 		node.point = newParent.leftNode === node ? getLeftNodePoint(newParent.point, newParent.radius) : getRightNodePoint(newParent.point, newParent.radius);
 	}
 	if (node.leftNode) {
@@ -147,4 +140,4 @@ const changeParent = (node: Node, newParent: Node) => {
 	if (node.rightNode) {
 		changeParent(node.rightNode, node);
 	}
-}
+};
