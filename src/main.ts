@@ -20,7 +20,6 @@ function main() {
   const btn = document.getElementById('add-to-tree');
   btn.addEventListener('click', () => {
     const input = <HTMLInputElement>document.getElementById('tree-input');
-    const canvas = <HTMLCanvasElement>document.getElementById('flowers');
     const value = parseInt(input.value);
     if (value) {
       const context = canvas.getContext('2d');
