@@ -5,12 +5,15 @@ export interface Circle {
 	y: number
 }
 
-export const drawCircle = (canvas: HTMLCanvasElement, pt: Point, radius: number, text?: string) => {
+export type ContextCallback = (context: CanvasRenderingContext2D) => void;
+
+export const drawCircle = (canvas: HTMLCanvasElement, pt: Point, radius: number, text?: string, contextCallback?: ContextCallback) => {
 	const context = canvas.getContext('2d');
-	const canvasWidth = canvas.width;
-	const canvasHeight = canvas.height;
 
 	context.beginPath();
+	if (contextCallback) {
+		contextCallback(context);
+	}
 	context.arc(pt.x, pt.y, radius, 0, 2 * Math.PI, false);
 	// context.fillStyle = 'green';
 	// context.lineWidth = 5;

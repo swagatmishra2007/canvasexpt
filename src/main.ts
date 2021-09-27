@@ -1,4 +1,4 @@
-import { bTree, displayBTree, Node } from "./animations/trees";
+import { bTree, displayBTree, leftRotate, Node } from "./animations/trees";
 
 let node: Node;
 function main() {
@@ -25,12 +25,29 @@ function main() {
     if (value) {
       const context = canvas.getContext('2d');
       context.clearRect(0, 0, canvas.width, canvas.height);
-      node = bTree(node, value, canvas);
+      // node = bTree(node, value, canvas);
+      // displayBTree(node, canvas);
+      // node = redBlackTree(node as RedBlackNode, value, canvas);
+      // for (const x of [45, 13, 11, 21, 15, 31]) {
+      for (const x of [13, 11, 21, 15, 31]) {
+        node = bTree(node, x, canvas);
+      }
       displayBTree(node, canvas);
     }
 
     else
       alert("Wrong input");
+  });
+
+  document.getElementById('left-rotate').addEventListener('click', () => {
+    const context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    // node = leftRotate(node.leftNode, node);
+    // root being roated case -
+    node = leftRotate(node, node);
+    displayBTree(node, canvas);
+  });
+  document.getElementById('right-rotate').addEventListener('click', () => {
   });
 }
 

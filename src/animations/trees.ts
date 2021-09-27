@@ -1,14 +1,15 @@
 import { drawCircle } from "../models/circle";
 import { Point } from "../models/point";
 
-const Radius: number = 10;
+export const Radius: number = 10;
 
 export interface Node {
 	value: number,
 	leftNode: Node,
 	rightNode: Node,
 	point: Point,
-	radius: number
+	radius: number,
+	parent: Node
 }
 
 const drawLine = (source: Node, destination: Node, canvas: HTMLCanvasElement) => {
@@ -33,7 +34,8 @@ export const bTree = (root: Node, value: number, canvas: HTMLCanvasElement): Nod
 		leftNode: undefined,
 		rightNode: undefined,
 		point: new Point(500, 100),
-		radius: Radius
+		radius: Radius,
+		parent: undefined
 	};
 	if (!root) {
 		drawNode(node, canvas);
@@ -77,6 +79,7 @@ const recursiveAddNode = (currentNode: Node, nodeToAdd: Node) => {
 			const location = getLeftNodePoint(currentNode.point, nodeToAdd.radius);
 			nodeToAdd.point = location;
 			currentNode.leftNode = nodeToAdd;
+			nodeToAdd.parent = currentNode;
 		}
 	}
 	else {
@@ -88,13 +91,64 @@ const recursiveAddNode = (currentNode: Node, nodeToAdd: Node) => {
 			const location = getRightNodePoint(currentNode.point, nodeToAdd.radius);
 			nodeToAdd.point = location;
 			currentNode.rightNode = nodeToAdd;
+			nodeToAdd.parent = currentNode;
 		}
 	}
 }
 
-const getLeftNodePoint = (point: Point, radius: number) => {
+export const getLeftNodePoint = (point: Point, radius: number) => {
 	return new Point(point.x - (3 * radius), point.y + (3 * radius));
 }
-const getRightNodePoint = (point: Point, radius: number) => {
+export const getRightNodePoint = (point: Point, radius: number) => {
 	return new Point(point.x + (3 * radius), point.y + (3 * radius));
+}
+
+export const leftRotate = (node: Node, root: Node) => {
+	if (!node.rightNode) {
+		alert('node must have right node to be left rotated');
+		return root;
+	}
+	const x = node;
+	const y = node.rightNode;
+
+	x.rightNode = y.leftNode;
+	//x.rightNode.parent = x;
+	changeParent(x.rightNode, x);
+	y.leftNode = x;
+	if (x.parent) {
+		if (x.parent.leftNode === x) {
+			x.parent.leftNode = y;
+		}
+		else {
+			x.parent.rightNode = y;
+		}
+		// y.parent = x.parent;
+		changeParent(y, x.parent);
+	}
+	else {
+		//x is root, so override root
+		// y.parent = null;
+		changeParent(y, null);
+		root = y;
+	}
+
+	// x.parent = y;
+	changeParent(x, y);
+	return root;
+}
+
+const changeParent = (node: Node, newParent: Node) => {
+	if (!newParent) {
+		// node is new root
+		node.point = new Point(500, 100);
+	}
+	else {
+		node.point = newParent.leftNode === node ? getLeftNodePoint(newParent.point, newParent.radius) : getRightNodePoint(newParent.point, newParent.radius);
+	}
+	if (node.leftNode) {
+		changeParent(node.leftNode, node);
+	}
+	if (node.rightNode) {
+		changeParent(node.rightNode, node);
+	}
 }
