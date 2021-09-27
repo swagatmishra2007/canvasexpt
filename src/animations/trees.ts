@@ -1,7 +1,7 @@
 import { drawCircle } from "../models/circle";
 import { Point } from "../models/point";
 
-export const Radius: number = 10;
+export const Radius = 10;
 
 export interface Node {
 	value: number,
@@ -112,7 +112,6 @@ export const leftRotate = (node: Node, root: Node) => {
 	const y = node.rightNode;
 
 	x.rightNode = y.leftNode;
-	//x.rightNode.parent = x;
 	changeParent(x.rightNode, x);
 	y.leftNode = x;
 	if (x.parent) {
@@ -122,17 +121,14 @@ export const leftRotate = (node: Node, root: Node) => {
 		else {
 			x.parent.rightNode = y;
 		}
-		// y.parent = x.parent;
 		changeParent(y, x.parent);
 	}
 	else {
-		//x is root, so override root
-		// y.parent = null;
+		// x is root, so override root
 		changeParent(y, null);
 		root = y;
 	}
 
-	// x.parent = y;
 	changeParent(x, y);
 	return root;
 }
