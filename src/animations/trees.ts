@@ -3,21 +3,25 @@ import { Point } from '../models/point';
 
 export const Radius = 10;
 
+export interface CanvasInfo {
+	point: Point;
+	radius: number;
+}
+
 export interface Node {
 	value: number;
 	leftNode: Node;
 	rightNode: Node;
-	point: Point;
-	radius: number;
 	parent: Node;
+	canvasInfo: CanvasInfo;
 }
 
 const drawLine = (source: Node, destination: Node, canvas: HTMLCanvasElement) => {
 	const ctx = canvas.getContext('2d');
-	const moveToX = source.point.x;
-	const moveToY = source.point.y + source.radius;
-	const lineToX = destination.point.x;
-	const lineToY = destination.point.y - destination.radius;
+	const moveToX = source.canvasInfo.point.x;
+	const moveToY = source.canvasInfo.point.y + source.canvasInfo.radius;
+	const lineToX = destination.canvasInfo.point.x;
+	const lineToY = destination.canvasInfo.point.y - destination.canvasInfo.radius;
 	ctx.beginPath();
 	ctx.moveTo(moveToX, moveToY);
 	ctx.lineTo(lineToX, lineToY);
@@ -25,7 +29,7 @@ const drawLine = (source: Node, destination: Node, canvas: HTMLCanvasElement) =>
 };
 
 const drawNode = (node: Node, canvas: HTMLCanvasElement) => {
-	drawCircle(canvas, node.point, node.radius, node.value.toString());
+	drawCircle(canvas, node.canvasInfo.point, node.canvasInfo.radius, node.value.toString());
 };
 
 export const bTree = (root: Node, value: number, canvas: HTMLCanvasElement): Node => {
@@ -33,11 +37,14 @@ export const bTree = (root: Node, value: number, canvas: HTMLCanvasElement): Nod
 		value,
 		leftNode: undefined,
 		rightNode: undefined,
-		point: new Point(500, 100),
-		radius: Radius,
-		parent: undefined
+		parent: undefined,
+		canvasInfo: null
 	};
 	if (!root) {
+		node.canvasInfo = {
+			point: new Point(500, 100),
+			radius: Radius
+		};
 		drawNode(node, canvas);
 		return node;
 	} else {
@@ -74,21 +81,39 @@ const recursiveAddNode = (currentNode: Node, nodeToAdd: Node) => {
 			recursiveAddNode(currentNode.leftNode, nodeToAdd);
 			return;
 		} else {
-			const location = getLeftNodePoint(currentNode.point, nodeToAdd.radius);
-			nodeToAdd.point = location;
 			currentNode.leftNode = nodeToAdd;
 			nodeToAdd.parent = currentNode;
+			nodeToAdd.canvasInfo = null;
+			populateCanvasInfo(nodeToAdd, false);
 		}
 	} else {
 		if (currentNode.rightNode) {
 			recursiveAddNode(currentNode.rightNode, nodeToAdd);
 			return;
 		} else {
-			const location = getRightNodePoint(currentNode.point, nodeToAdd.radius);
-			nodeToAdd.point = location;
 			currentNode.rightNode = nodeToAdd;
 			nodeToAdd.parent = currentNode;
+			nodeToAdd.canvasInfo = null;
+			populateCanvasInfo(nodeToAdd, false);
 		}
+	}
+};
+
+export const populateCanvasInfo = (node: Node, forcePopulate: boolean) => {
+	if (node && (forcePopulate || !node.canvasInfo)) {
+		let ptLocation: Point;
+		if (node.parent) {
+			const isLeft = node.parent.leftNode !== null && node.parent.leftNode === node;
+			ptLocation = isLeft ? getLeftNodePoint(node.parent.canvasInfo.point, node.parent.canvasInfo.radius) : getRightNodePoint(node.parent.canvasInfo.point, node.parent.canvasInfo.radius);
+		} else {
+			ptLocation = new Point(500, 100);
+		}
+		node.canvasInfo = {
+			point: ptLocation,
+			radius: node.parent ? node.parent.canvasInfo.radius : Radius
+		};
+		populateCanvasInfo(node.leftNode, forcePopulate);
+		populateCanvasInfo(node.rightNode, forcePopulate);
 	}
 };
 
@@ -128,16 +153,6 @@ export const leftRotate = (node: Node, root: Node) => {
 };
 
 const changeParent = (node: Node, newParent: Node) => {
-	if (!newParent) {
-		// node is new root
-		node.point = new Point(500, 100);
-	} else {
-		node.point = newParent.leftNode === node ? getLeftNodePoint(newParent.point, newParent.radius) : getRightNodePoint(newParent.point, newParent.radius);
-	}
-	if (node.leftNode) {
-		changeParent(node.leftNode, node);
-	}
-	if (node.rightNode) {
-		changeParent(node.rightNode, node);
-	}
+	node.parent = newParent;
+	node.canvasInfo = null;
 };

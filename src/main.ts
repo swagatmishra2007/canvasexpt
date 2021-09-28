@@ -1,4 +1,4 @@
-import { bTree, displayBTree, leftRotate, Node } from './animations/trees';
+import { bTree, displayBTree, leftRotate, Node, populateCanvasInfo } from './animations/trees';
 
 let node: Node;
 function main() {
@@ -43,6 +43,7 @@ function main() {
     // node = leftRotate(node.leftNode, node);
     // root being roated case -
     node = leftRotate(node, node);
+    populateCanvasInfo(node, true);
     displayBTree(node, canvas);
   });
   document.getElementById('right-rotate').addEventListener('click', () => {
