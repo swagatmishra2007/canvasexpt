@@ -21,8 +21,7 @@ export const redBlackTree = (root: RedBlackNode, value: number) => {
 		node.color = 'Black';
 		populateCanvasInfo(node, true);
 		return node;
-	}
-	else {
+	} else {
 		return insertNode(root, node);
 	}
 };
@@ -50,26 +49,7 @@ const fixAfterInsert = (node: RedBlackNode, root: Node) => {
 	const p = node.parent as RedBlackNode;
 	const newNode = node;
 
-	// if (gp.leftNode === p) {
-	// 	if (getColor(gp.rightNode) === 'Red') {
-	// 		setColor(gp.leftNode, 'Black');
-	// 		setColor(gp.rightNode, 'Black');
-	// 		setColor(gp, 'Red');
-	// 		fixAfterInsert(gp, root);
-	// 		return;
-	// 	}
-	// 	else if (p.rightNode === newNode) {
-	// 		root = leftRotate(p, root);
-	// 	}
 
-	// }
-	// else {
-	// 	if(getColor(gp.leftNode) === 'Red') {
-	// 		setColor(gp.leftNode, 'Black')
-	// 		setColor(gp.rightNode, 'Black')
-	// 		setColor(gp, 'Red');
-	// 	}
-	// }
 	// find color of sibling of p
 	if (gp.leftNode === p) { // parent is left node of g
 		if (getColor(gp.rightNode) === 'Red') { // sibling case
@@ -78,14 +58,12 @@ const fixAfterInsert = (node: RedBlackNode, root: Node) => {
 			setColor(gp, 'Red');
 			root = fixAfterInsert(gp, root);
 			return root;
-		}
-		else {
-			if (p.rightNode === newNode) { ///\ shape which ll be transofrmed into  //shape
+		} else {
+			if (p.rightNode === newNode) { /// \ shape which ll be transofrmed into  //shape
 				root = leftRotate(p, root);
 				root = fixAfterInsert(p, root);
 				return root;
-			}
-			else { // // shape
+			} else { // // shape
 				setColor(p, 'Black');
 				setColor(gp, 'Red');
 				root = rightRotate(gp, root);
@@ -94,32 +72,27 @@ const fixAfterInsert = (node: RedBlackNode, root: Node) => {
 
 			}
 		}
-
-	}
-	else { // parent is right node of g
+	} else { // parent is right node of g
 		if (getColor(gp.leftNode) === 'Red') { // sibling case
 			setColor(gp.leftNode, 'Black');
 			setColor(gp.rightNode, 'Black');
 			setColor(gp, 'Red');
 			root = fixAfterInsert(gp, root);
 			return root;
-		}
-		else {
-			if (p.leftNode === newNode) { //\/ shape  whle ll   be transformed  into\\ shape
+		} else {
+			if (p.leftNode === newNode) { // \/ shape  whle ll   be transformed  into\\ shape
 				root = rightRotate(p, root);
 				root = fixAfterInsert(p, root);
 				return root;
-			}
-			else {// \\ shape
+			} else {// \\ shape
 				setColor(p, 'Black');
 				setColor(gp, 'Red');
 				root = leftRotate(gp, root);
 				return root;
 			}
-
 		}
 	}
-}
+};
 
 const getColor = (node: Node) => node ? (node as RedBlackNode).color : 'Black';
 
@@ -127,7 +100,7 @@ const setColor = (node: Node, color: Color) => {
 	if (node) {
 		(node as RedBlackNode).color = color;
 	}
-}
+};
 
 export const displayRedBlackTree = (root: RedBlackNode, canvas: HTMLCanvasElement) => {
 	displayRedBlackTreeSubTree(null, root, canvas);

@@ -1,5 +1,6 @@
 import { displayRedBlackTree, RedBlackNode, redBlackTree } from './animations/redBlackTrees';
 import { displayBTree, leftRotate, Node, populateCanvasInfo, rightRotate } from './animations/trees';
+import { Point } from './models/point';
 
 let node: Node;
 function main() {
@@ -24,8 +25,7 @@ function main() {
     let values: number[];
     if (input.value.indexOf(',') > -1) {
       values = input.value.split(',').map(x => parseInt(x));
-    }
-    else {
+    } else {
       values = [parseInt(input.value)];
     }
     if (values.every((elem) => elem !== null && elem !== undefined && !isNaN(elem))) {
@@ -33,12 +33,13 @@ function main() {
       const context = canvas.getContext('2d');
       context.clearRect(0, 0, canvas.width, canvas.height);
       for (const x of values) {
-        //node = bTree(node, x, canvas);
+        // node = bTree(node, x, canvas);
         node = redBlackTree(node as RedBlackNode, x);
         populateCanvasInfo(node, true);
+        moveOverlappingNodes(node);
       }
-      displayTree(node);
-      //displayBTree(node, canvas);
+      //  displayTree(node);
+      //  displayBTree(node, canvas);
       displayRedBlackTree(node as RedBlackNode, canvas);
     } else {
       alert('Wrong input');
@@ -67,8 +68,28 @@ const displayTree = (item: Node) => {
     displayTree(item.leftNode);
     displayTree(item.rightNode);
   }
-}
+};
+
+const moveOverlappingNodes = (item: Node) => {
+  const dict = {};
+  moveOverlappingNodesInt(item, dict);
+
+};
+const moveOverlappingNodesInt = (item: Node, obj: any) => {
+  if (item) {
+    if (obj[item.canvasInfo.point.x + ' ' + item.canvasInfo.point.y]) {
+      const loc = item.canvasInfo.point;
+      item.canvasInfo.point = new Point(loc.x + item.canvasInfo.radius * 2, loc.y);
+    } else {
+      obj[item.canvasInfo.point.x + ' ' + item.canvasInfo.point.y] = true;
+    }
+    moveOverlappingNodesInt(item.leftNode, obj);
+    moveOverlappingNodesInt(item.rightNode, obj);
+  }
+
+};
 
 main();
 
-//not fully balanced - 35,34,16,17,57
+// not fully balanced - 35,34,16,17,57
+// overlaps - 39,34,16,17,57,36

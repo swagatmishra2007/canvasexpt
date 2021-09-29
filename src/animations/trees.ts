@@ -170,13 +170,11 @@ export const rightRotate = (node: Node, root: Node) => {
 	if (y.parent) {
 		if (y.parent.leftNode === y) {
 			y.parent.leftNode = x;
-		}
-		else {
+		} else {
 			y.parent.rightNode = x;
 		}
 		changeParent(x, y.parent);
-	}
-	else {
+	} else {
 		// y is root, so override root
 		changeParent(x, null);
 		root = x;
