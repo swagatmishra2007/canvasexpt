@@ -16,7 +16,7 @@ export interface Node {
 	canvasInfo: CanvasInfo;
 }
 
-const drawLine = (source: Node, destination: Node, canvas: HTMLCanvasElement) => {
+export const drawLine = (source: Node, destination: Node, canvas: HTMLCanvasElement) => {
 	const ctx = canvas.getContext('2d');
 	const moveToX = source.canvasInfo.point.x;
 	const moveToY = source.canvasInfo.point.y + source.canvasInfo.radius;
@@ -75,7 +75,7 @@ const display = (previousNode: Node, node: Node, canvas: HTMLCanvasElement) => {
 	}
 };
 
-const recursiveAddNode = (currentNode: Node, nodeToAdd: Node) => {
+export const recursiveAddNode = (currentNode: Node, nodeToAdd: Node) => {
 	if (nodeToAdd.value < currentNode.value) {
 		if (currentNode.leftNode) {
 			recursiveAddNode(currentNode.leftNode, nodeToAdd);
@@ -103,6 +103,9 @@ export const populateCanvasInfo = (node: Node, forcePopulate: boolean) => {
 	if (node && (forcePopulate || !node.canvasInfo)) {
 		let ptLocation: Point;
 		if (node.parent) {
+			if (!node.parent.canvasInfo) {
+				throw new Error('parent canvas info for node is null ' + node.value);
+			}
 			const isLeft = node.parent.leftNode !== null && node.parent.leftNode === node;
 			ptLocation = isLeft ? getLeftNodePoint(node.parent.canvasInfo.point, node.parent.canvasInfo.radius) : getRightNodePoint(node.parent.canvasInfo.point, node.parent.canvasInfo.radius);
 		} else {
@@ -152,7 +155,37 @@ export const leftRotate = (node: Node, root: Node) => {
 	return root;
 };
 
+export const rightRotate = (node: Node, root: Node) => {
+	if (!node.leftNode) {
+		alert('node must have left node to be left rotated');
+		return root;
+	}
+
+	const x = node.leftNode;
+	const y = node;
+
+	y.leftNode = x.rightNode;
+	changeParent(y.leftNode, y);
+	x.rightNode = y;
+	if (y.parent) {
+		if (y.parent.leftNode === y) {
+			y.parent.leftNode = x;
+		} else {
+			y.parent.rightNode = x;
+		}
+		changeParent(x, y.parent);
+	} else {
+		// y is root, so override root
+		changeParent(x, null);
+		root = x;
+	}
+	changeParent(y, x);
+	return root;
+};
+
 const changeParent = (node: Node, newParent: Node) => {
-	node.parent = newParent;
-	node.canvasInfo = null;
+	if (node) {
+		node.parent = newParent;
+		node.canvasInfo = null;
+	}
 };
