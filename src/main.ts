@@ -1,4 +1,5 @@
-import { bTree, displayBTree, leftRotate, Node, populateCanvasInfo } from './animations/trees';
+import { displayRedBlackTree, RedBlackNode, redBlackTree } from './animations/redBlackTrees';
+import { displayBTree, leftRotate, Node, populateCanvasInfo, rightRotate } from './animations/trees';
 
 let node: Node;
 function main() {
@@ -20,18 +21,25 @@ function main() {
   const btn = document.getElementById('add-to-tree');
   btn.addEventListener('click', () => {
     const input = <HTMLInputElement>document.getElementById('tree-input');
-    const value = parseInt(input.value);
-    if (value) {
+    let values: number[];
+    if (input.value.indexOf(',') > -1) {
+      values = input.value.split(',').map(x => parseInt(x));
+    }
+    else {
+      values = [parseInt(input.value)];
+    }
+    if (values.every((elem) => elem !== null && elem !== undefined && !isNaN(elem))) {
+      node = null;
       const context = canvas.getContext('2d');
       context.clearRect(0, 0, canvas.width, canvas.height);
-      // node = bTree(node, value, canvas);
-      // displayBTree(node, canvas);
-      // node = redBlackTree(node as RedBlackNode, value, canvas);
-      // for (const x of [45, 13, 11, 21, 15, 31]) {
-      for (const x of [13, 11, 21, 15, 31]) {
-        node = bTree(node, x, canvas);
+      for (const x of values) {
+        //node = bTree(node, x, canvas);
+        node = redBlackTree(node as RedBlackNode, x);
+        populateCanvasInfo(node, true);
       }
-      displayBTree(node, canvas);
+      displayTree(node);
+      //displayBTree(node, canvas);
+      displayRedBlackTree(node as RedBlackNode, canvas);
     } else {
       alert('Wrong input');
     }
@@ -40,14 +48,25 @@ function main() {
   document.getElementById('left-rotate').addEventListener('click', () => {
     const context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
-    // node = leftRotate(node.leftNode, node);
-    // root being roated case -
     node = leftRotate(node, node);
     populateCanvasInfo(node, true);
     displayBTree(node, canvas);
   });
   document.getElementById('right-rotate').addEventListener('click', () => {
+    const context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    node = rightRotate(node, node);
+    populateCanvasInfo(node, true);
+    displayBTree(node, canvas);
   });
+}
+
+const displayTree = (item: Node) => {
+  if (item) {
+    console.log(item.value + ' with parent ' + (item.parent ? item.parent.value : null));
+    displayTree(item.leftNode);
+    displayTree(item.rightNode);
+  }
 }
 
 main();
