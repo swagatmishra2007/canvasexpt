@@ -1,5 +1,5 @@
 import { drawCircle } from '../models/circle';
-import { drawLine, Node, populateCanvasInfo, recursiveAddNode, rightRotate } from './trees';
+import { drawLine, leftRotate, Node, populateCanvasInfo, recursiveAddNode, rightRotate } from './trees';
 
 export type Color = 'Red' | 'Black';
 
@@ -23,26 +23,27 @@ export const redBlackTree = (root: RedBlackNode, value: number) => {
 		return node;
 	}
 	else {
-		insertNode(root, node);
-		return root;
+		return insertNode(root, node);
 	}
 };
 
 const insertNode = (root: RedBlackNode, nodeToAdd: RedBlackNode) => {
 	nodeToAdd.color = 'Red';
 	recursiveAddNode(root, nodeToAdd);
-	fixAfterInsert(nodeToAdd, root);
+	root = fixAfterInsert(nodeToAdd, root) as RedBlackNode;
+	return root;
 };
 
 const fixAfterInsert = (node: RedBlackNode, root: Node) => {
 	if (!node.parent) {
 		// node is root, nothing to do
 		node.color = 'Black';
-		return;
+		root = node;
+		return root;
 	}
 
 	if ((node.parent as RedBlackNode).color === 'Black') {
-		return;
+		return root;
 	}
 
 	const gp = node.parent.parent as RedBlackNode;
@@ -75,14 +76,23 @@ const fixAfterInsert = (node: RedBlackNode, root: Node) => {
 			setColor(gp.leftNode, 'Black');
 			setColor(gp.rightNode, 'Black');
 			setColor(gp, 'Red');
-			fixAfterInsert(gp, root);
-			return;
+			root = fixAfterInsert(gp, root);
+			return root;
 		}
 		else {
-			setColor(p, 'Black');
-			setColor(gp, 'Red');
-			rightRotate(gp, root);
-			return;
+			if (p.rightNode === newNode) { ///\ shape which ll be transofrmed into  //shape
+				root = leftRotate(p, root);
+				root = fixAfterInsert(p, root);
+				return root;
+			}
+			else { // // shape
+				setColor(p, 'Black');
+				setColor(gp, 'Red');
+				root = rightRotate(gp, root);
+				// root = fixAfterInsert(p, root);
+				return root;
+
+			}
 		}
 
 	}
@@ -91,10 +101,21 @@ const fixAfterInsert = (node: RedBlackNode, root: Node) => {
 			setColor(gp.leftNode, 'Black');
 			setColor(gp.rightNode, 'Black');
 			setColor(gp, 'Red');
-			fixAfterInsert(gp, root);
-			return;
+			root = fixAfterInsert(gp, root);
+			return root;
 		}
 		else {
+			if (p.leftNode === newNode) { //\/ shape  whle ll   be transformed  into\\ shape
+				root = rightRotate(p, root);
+				root = fixAfterInsert(p, root);
+				return root;
+			}
+			else {// \\ shape
+				setColor(p, 'Black');
+				setColor(gp, 'Red');
+				root = leftRotate(gp, root);
+				return root;
+			}
 
 		}
 	}

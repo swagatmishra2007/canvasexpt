@@ -70,3 +70,5 @@ const displayTree = (item: Node) => {
 }
 
 main();
+
+//not fully balanced - 35,34,16,17,57
