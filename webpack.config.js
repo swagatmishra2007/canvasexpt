@@ -4,7 +4,10 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  entry: './src/main.ts',
+  entry: {
+    rbTree: './src/rbTreeMain.ts',
+    index: './src/main.ts'
+  },
   mode: 'development',
   module: {
     rules: [
@@ -39,7 +42,16 @@ module.exports = {
       cleanOnceBeforeBuildPatterns: ['dist'],
     }),
     new HtmlWebpackPlugin({
+      template: 'src/redblacktree.html',
+      inject: true,
+      chunks: ['rbTree'],
+      filename: 'redblacktree.html'
+    }),
+    new HtmlWebpackPlugin({
       template: 'src/index.html',
+      inject: true,
+      chunks: ['main'],
+      filename: 'index.html'
     }),
     new CopyWebpackPlugin({
       patterns: [
