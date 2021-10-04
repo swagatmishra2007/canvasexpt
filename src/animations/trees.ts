@@ -16,12 +16,12 @@ export interface Node {
 	canvasInfo: CanvasInfo;
 }
 
-export const drawLine = (source: Node, destination: Node, canvas: HTMLCanvasElement) => {
+export const drawLine = (source: CanvasInfo, destination: CanvasInfo, canvas: HTMLCanvasElement) => {
 	const ctx = canvas.getContext('2d');
-	const moveToX = source.canvasInfo.point.x;
-	const moveToY = source.canvasInfo.point.y + source.canvasInfo.radius;
-	const lineToX = destination.canvasInfo.point.x;
-	const lineToY = destination.canvasInfo.point.y - destination.canvasInfo.radius;
+	const moveToX = source.point.x;
+	const moveToY = source.point.y + source.radius;
+	const lineToX = destination.point.x;
+	const lineToY = destination.point.y - destination.radius;
 	ctx.beginPath();
 	ctx.moveTo(moveToX, moveToY);
 	ctx.lineTo(lineToX, lineToY);
@@ -70,7 +70,7 @@ const display = (previousNode: Node, node: Node, canvas: HTMLCanvasElement) => {
 	if (node) {
 		drawNode(node, canvas);
 		if (previousNode) {
-			drawLine(previousNode, node, canvas);
+			drawLine(previousNode.canvasInfo, node.canvasInfo, canvas);
 		}
 	}
 };
