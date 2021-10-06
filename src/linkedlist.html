@@ -5,9 +5,9 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<meta name='author' content='Swagat'>
+	<meta name='author' content='Changhui Xu'>
 	<meta name='original-source' content='https://github.com/changhuixu/canvas-animation-step-by-step'>
-	<title>Canvas Experiments</title>
+	<title>Canvas Animation</title>
 	<link rel="stylesheet" href="style.css">
 	<link rel="manifest" href="./manifest.json">
 	<link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png">
@@ -21,12 +21,18 @@
 </head>
 
 <body>
-	<div class="dropdown">
-		<button class="dropbtn">Mode</button>
-		<div class="dropdown-content">
-			<a href="/redblacktree.html">Red Black Tree</a>
-			<a href="/linkedlist.html">Linked List</a>
-			<a href="#">Link 3</a>
+	<main class="app">
+		<!-- <div class="instruction">
+            <button id="clearBtn">Reset</button>
+        </div> -->
+		<div class='input-box'>
+			<input id='linkedlist-input' type='string' placeholder='Enter numbers'>
+			<button id='add-to-list'>Add To List</button>
+			<button id='reverse-by-k'>Reverse By K</button>
+			<button id='find-missing'>Find Smallest Missing</button>
 		</div>
-	</div>
+		<canvas id="canvas" width="1000" height="600"></canvas>
+	</main>
 </body>
+
+</html>

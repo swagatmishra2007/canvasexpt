@@ -6,7 +6,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
   entry: {
     rbTree: './src/rbTreeMain.ts',
-    index: './src/main.ts'
+    index: './src/main.ts',
+    linkedList: './src/linkedList.ts'
   },
   mode: 'development',
   module: {
@@ -46,6 +47,12 @@ module.exports = {
       inject: true,
       chunks: ['rbTree'],
       filename: 'redblacktree.html'
+    }),
+    new HtmlWebpackPlugin({
+      template: 'src/linkedlist.html',
+      inject: true,
+      chunks: ['linkedList'],
+      filename: 'linkedlist.html'
     }),
     new HtmlWebpackPlugin({
       template: 'src/index.html',

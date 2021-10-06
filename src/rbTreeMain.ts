@@ -86,7 +86,6 @@ const moveOverlappingNodesInt = (item: Node, obj: any) => {
     moveOverlappingNodesInt(item.leftNode, obj);
     moveOverlappingNodesInt(item.rightNode, obj);
   }
-
 };
 
 main();

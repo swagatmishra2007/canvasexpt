@@ -118,7 +118,7 @@ const display = (previousNode: RedBlackNode, node: RedBlackNode, canvas: HTMLCan
 	if (node) {
 		drawRedBlackNode(node, canvas);
 		if (previousNode) {
-			drawLine(previousNode, node, canvas);
+			drawLine(previousNode.canvasInfo, node.canvasInfo, canvas);
 		}
 	}
 };
