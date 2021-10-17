@@ -20,20 +20,20 @@ type CohortState = `${coordinatorActions}-${'Received' | 'AckSent'}`;
 
 interface ProcessorNode {
 	tag: nodeTypes,
-	log: LogRecord[],
+	log: Log,
 	requestQueue: requestMessage[],
 	persistedStore: string[]
 }
 
 class CoordinatorNode implements ProcessorNode {
-	log: LogRecord[];
+	log: Log;
 	requestQueue: requestMessage[];
 	persistedStore: string[];
 	tag: 'Coordinator';
 	currentState: CoordinatorState | 'Waiting';
 	private receiveCount: number;
 	constructor() {
-		this.log = [];
+		this.log = new Log();
 		this.requestQueue = [];
 		this.persistedStore = [];
 		this.currentState = 'Waiting';
@@ -49,6 +49,42 @@ class CoordinatorNode implements ProcessorNode {
 		return false;
 	}
 
+	receiveMessageExternal(scheduler: Scheduler, request: requestMessage) {
+		switch (this.currentState) {
+			case 'Waiting':
+				// update write ahead log
+				// send out notification
+				this.log.append({
+					tId: request.tid,
+					payload: 'Start'
+				});
+				scheduler.broadcast({
+					tid: request.tid,
+					message: 'prepareT'
+				});
+				this.currentState = 'PrepareT-Sent';
+				break;
+			case 'PrepareT-Sent':
+				// no prepare t ack
+				if (request.message === 'Abort') {
+					scheduler.broadcast({
+						tid: request.tid,
+						message: 'AbortT'
+					});
+					this.currentState = 'AbortT-Sent';
+				}
+				else {
+					// count commits
+				}
+				break;
+			case 'AbortT-Sent':
+				break;
+			case 'CommitT-Sent':
+				break;
+
+		}
+	}
+
 	clearMessage() {
 		this.receiveCount = 0;
 	}
@@ -58,12 +94,12 @@ class CohortNode implements ProcessorNode {
 	tag: 'Cohort'
 	currentState: CohortState | 'Waiting'
 	constructor() {
-		this.log = [];
+		this.log = new Log();
 		this.requestQueue = [];
 		this.persistedStore = [];
 		this.currentState = 'Waiting';
 	}
-	log: LogRecord[];
+	log: Log;
 	requestQueue: requestMessage[];
 	persistedStore: string[];
 };
@@ -74,8 +110,8 @@ let takeNextAction = (node: CoordinatorNode | CohortNode, request: requestMessag
 			case 'Waiting':
 				// update write ahead log
 				// send out notification
-				node.log.push({
-					tId: 'blah',
+				node.log.append({
+					tId: request.tid,
 					payload: 'Start'
 				});
 				scheduler.broadcast({
@@ -90,7 +126,7 @@ let takeNextAction = (node: CoordinatorNode | CohortNode, request: requestMessag
 					return;
 				}
 				if (node.receiveMessage()) {
-					// clear out WAL
+					// Abort WAL
 					node.currentState = 'Waiting';
 				}
 				break;
@@ -131,12 +167,32 @@ let takeNextAction = (node: CoordinatorNode | CohortNode, request: requestMessag
 
 type LogRecord = {
 	tId: string,
-	payload: LogPayload | 'Start' | 'Commit'
+	payload: LogPayload | 'Start' | 'Commit',
+	parent?: LogRecord
 }
 
 type LogPayload = {
 	oldValue: string,
 	newValue: string
+}
+
+class Log {
+	private current: LogRecord;
+	append(record: LogRecord) {
+		record.parent = this.current;
+		this.current = record;
+	}
+
+	findTrasactionState(tId: string) {
+		let record = this.current;
+		while (record) {
+			if (record.tId === tId && (record.payload === 'Commit' || record.payload === 'Start')) {
+				return record.payload;
+			}
+			record = record.parent;
+		}
+		throw new Error('tid not found');
+	}
 }
 
 type requestMessage = {
@@ -176,14 +232,4 @@ class Scheduler {
 		item[0].requestQueue.push(message);
 
 	}
-}
-
-const findTransactionState = (log: LogRecord[], tid: string) => {
-	const records = log.filter(item => item.tId === tid);
-	for (let item of records) {
-		if (item.payload === 'Commit') {
-			return 'Commit';
-		}
-	}
-	return 'Start';
 }
