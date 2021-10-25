@@ -7,7 +7,8 @@ module.exports = {
   entry: {
     rbTree: './src/rbTreeMain.ts',
     index: './src/main.ts',
-    linkedList: './src/linkedList.ts'
+    linkedList: './src/linkedList.ts',
+    database: './src/database.ts'
   },
   mode: 'development',
   module: {
@@ -53,6 +54,12 @@ module.exports = {
       inject: true,
       chunks: ['linkedList'],
       filename: 'linkedlist.html'
+    }),
+    new HtmlWebpackPlugin({
+      template: 'src/database.html',
+      inject: true,
+      chunks: ['database'],
+      filename: 'database.html'
     }),
     new HtmlWebpackPlugin({
       template: 'src/index.html',

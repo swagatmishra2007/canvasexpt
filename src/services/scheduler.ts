@@ -2,7 +2,7 @@ import { CohortNode } from './Cohort';
 import { CoordinatorNode } from './Coordinator';
 import { IScheduler, requestMessage } from './Processor';
 
-class Scheduler implements IScheduler {
+export class Scheduler implements IScheduler {
   private currentTick: number = -1;
   private nodes: [CoordinatorNode | CohortNode];
 
@@ -15,7 +15,17 @@ class Scheduler implements IScheduler {
 
   nextTick() {
     this.currentTick = (this.currentTick + 1) % 5;
-    takeNextAction(this.nodes[this.currentTick], 'blah', this);
+    let node = this.nodes[this.currentTick];
+    if (node.requestQueue.length !== 0) {
+      node.receiveMessageExternal(this, node.requestQueue.pop());
+    };
+
+    // print out log for each
+    for (let item = 0; item < 5; item++) {
+      console.log(`for node ${item} \n`);
+      this.nodes[item].log.display();
+    }
+    //takeNextAction(this.nodes[this.currentTick], 'blah', this);
   }
 
   broadcast(message: requestMessage) {
