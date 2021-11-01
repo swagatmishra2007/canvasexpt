@@ -74,9 +74,15 @@ export class Log {
   // }
 
   // return true if committed
+  //skips the first as it was just written
   findStateOfVariable(variable: string) {
-    let dict: any = {};
     let record = this.current;
+    if (!record) {
+      return true;
+    }
+    //skip one
+    record = record.parent;
+    let dict: any = {};
     while (record) {
       if (dict[record.tId]) {
         if (record.payload === 'Commit' || record.payload === 'Abort') {
